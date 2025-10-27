@@ -1,6 +1,6 @@
 import pygame
 import sys
-import config 
+import config  # 🔹 Lấy thông số màn hình & màu nền từ file config.py
 from components.draw_button import Button
 from ui.settings.window_size import window_size_screen
 
