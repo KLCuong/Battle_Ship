@@ -7,11 +7,10 @@ from components.draw_button import Button
 def window_size_screen(screen, font, width, height, color_bg=(240, 240, 255)):
     clock = pygame.time.Clock()
     running = True
+    selected_size = None # Giá trị trả kích thước mới (nếu có)
 
-    # Danh sách kích thước có thể chọn
-    window_sizes = [(800, 600), (1024, 768), (1280, 720), (1366, 768)] #1920x1080 bi tran man hinh
+    window_sizes = [(800, 600), (1024, 768), (1280, 720), (1366, 768)]
 
-    # Hàm tạo lại danh sách nút khi đổi kích thước
     def create_buttons(w, h):
         btns = []
         for i, (bw, bh) in enumerate(window_sizes):
@@ -28,7 +27,6 @@ def window_size_screen(screen, font, width, height, color_bg=(240, 240, 255)):
         title_text = font.render("WINDOW SIZE", True, (0, 0, 100))
         screen.blit(title_text, (screen.get_width() // 2 - title_text.get_width() // 2, 80))
 
-        # Vẽ tất cả các nút
         for btn, _ in buttons:
             btn.draw(screen)
         back_button.draw(screen)
@@ -41,20 +39,17 @@ def window_size_screen(screen, font, width, height, color_bg=(240, 240, 255)):
             # Nếu nhấn chọn kích thước mới
             for btn, (w, h) in buttons:
                 if btn.is_clicked(event):
-                    os.environ["SDL_VIDEO_CENTERED"] = "1"  # Đặt cửa sổ ở giữa
+                    os.environ["SDL_VIDEO_CENTERED"] = "1"
                     screen = pygame.display.set_mode((w, h))
-                    
-                    # Cập nhật config toàn cục
                     config.update_config(width=w, height=h)
-
-                    # Tạo lại nút cho đúng với kích thước mới
                     buttons = create_buttons(w, h)
                     back_button.rect.topleft = (20, 20)
-                    width, height = w, h  # Cập nhật biến cục bộ
+                    width, height = w, h
+                    selected_size = (w, h)  # Lưu lại kích thước mới
 
             # Nút quay lại
             if back_button.is_clicked(event):
-                return  # Quay lại màn hình Settings
+                return selected_size  # Trả về kích thước mới (nếu có)
 
         pygame.display.flip()
         clock.tick(60)
